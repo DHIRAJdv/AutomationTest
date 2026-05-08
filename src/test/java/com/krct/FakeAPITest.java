@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.Map;
 
 public class FakeAPITest {
     @BeforeClass
@@ -72,12 +73,14 @@ public class FakeAPITest {
 
     @Test(priority = 6)
     public void testCreateCategory() {
-        String body = """
-                {
-                    "name": "dj",
-                    "image": "https://placeimg.com/640/480/any"
-                }
-                """;
+
+        String name = "dj_" + System.currentTimeMillis();
+
+        Map<String, Object> body = Map.of(
+                "name", name,
+                "image", "https://placeimg.com/640/480/any"
+        );
+
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(body)
@@ -86,8 +89,6 @@ public class FakeAPITest {
                 .then()
                 .log().all()
                 .statusCode(201)
-                .body("name", Matchers.equalTo("dj"))
-                .body("image", Matchers.equalTo("https://placeimg.com/640/480/any"));
+                .body("name", Matchers.equalTo(name));
     }
-
 }

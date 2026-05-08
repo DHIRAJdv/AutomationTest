@@ -19,6 +19,8 @@ public class CategoryTest {
         RestAssured.baseURI = "https://api.escuelajs.co/api/v1";
     }
 
+    // 10 Tests, all have data providers with 5 rows.
+
     @Test(priority = 1)
     public void testCreateCategory() {
 
@@ -57,25 +59,33 @@ public class CategoryTest {
 
     @Test(priority = 3)
     private void testUpdateCategory() {
-        String name = "category_" +System.currentTimeMillis();
-//        String image  = "https://picsum.photos/200";
-//        Map<String, Object> body = Map.of(
-//                "name", name,
-//                "image", image
-//        );
-
+        String name = "category_" + System.currentTimeMillis();
+        String image  = "https://picsum.photos/200";
+        Map<String, Object> body = Map.of(
+                "name", name,
+                "image", image
+        );
         RestAssured.given()
                 .pathParam("id", id)
-                .formParam("name", name)
+                .contentType(ContentType.JSON)
+                .body(body)
                 .when()
                 .put("/categories/{id}")
                 .then()
+                .log().all()
                 .statusCode(200)
                 .body("name", Matchers.equalTo(name));
     }
 
 
-
-
-
+    @Test(priority = 4)
+    public void testDeleteCategory(){
+        RestAssured.given()
+                .pathParam("id", id)
+                .when()
+                .delete("/categories/{id}")
+                .then()
+                .log().all()
+                .statusCode(200);
+    }
 }
